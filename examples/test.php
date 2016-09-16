@@ -14,7 +14,7 @@ $replay = protorpc_call("127.0.0.1:30015","TestHandler.Test",$test->serializeToS
 
 var_dump($replay);
 
-$test2 = new Test();
-$test2->parseFromString($replay);
+//$test2 = new Test();
+//$test2->parseFromString($replay);
 
-var_dump($test2);
+//var_dump($test2);

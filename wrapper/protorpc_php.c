@@ -45,35 +45,6 @@ PHP_INI_END()
 */
 /* }}} */
 
-/* Remove the following function when you have successfully modified config.m4
-   so that your module can be compiled into PHP, it exists only for testing
-   purposes. */
-
-/* Every user-visible function in PHP should document itself in the source */
-/* {{{ proto string confirm_protorpc_php_compiled(string arg)
-   Return a string to confirm that the module is compiled in */
-PHP_FUNCTION(confirm_protorpc_php_compiled)
-{
-	char *arg = NULL;
-	size_t arg_len, len;
-	zend_string *strg;
-
-	if (zend_parse_parameters(ZEND_NUM_ARGS(), "s", &arg, &arg_len) == FAILURE) {
-		return;
-	}
-
-	strg = strpprintf(0, "Congratulations! You have successfully modified ext/%.78s/config.m4. Module %.78s is now compiled into PHP.", "protorpc_php", arg);
-
-	RETURN_STR(strg);
-}
-/* }}} */
-/* The previous line is meant for vim and emacs, so it can correctly fold and
-   unfold functions in source code. See the corresponding marks just before
-   function definition, where the functions purpose is also documented. Please
-   follow this convention for the convenience of others editing your code.
-*/
-
-
 PHP_FUNCTION(protorpc)
 {
 	// 获取参数
@@ -87,10 +58,11 @@ PHP_FUNCTION(protorpc)
 	// 处理请求
 	GoString addr = {addr_char,strlen(addr_char)};
 	char *reply = Protorpc(addr,max,time_out);
-	
+
 	// 返回结果
 	zend_string *strg;
 	strg = zend_string_init(reply,strlen(reply),0);
+	free(reply);
 	RETURN_STR(strg);
 }
 
@@ -110,7 +82,7 @@ PHP_FUNCTION(protorpc_call)
 	// 返回结果
 	zend_string *strg;
 	strg = zend_string_init(reply,strlen(reply),0);
-
+	free(reply);
 	RETURN_STR(strg);
 }
 
@@ -190,7 +162,6 @@ PHP_MINFO_FUNCTION(protorpc_php)
 const zend_function_entry protorpc_php_functions[] = {
 	PHP_FE(protorpc,	NULL)	
 	PHP_FE(protorpc_call,	NULL)	
-	PHP_FE(confirm_protorpc_php_compiled,	NULL)		/* For testing, remove later. */
 	PHP_FE_END	/* Must be the last line in protorpc_php_functions[] */
 };
 /* }}} */

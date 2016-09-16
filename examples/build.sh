@@ -13,7 +13,7 @@ cd "$DIR/../wrapper/"
 make -f "$DIR/../wrapper/Makefile" clean
 cd "$DIR"
 
-go build -buildmode=c-archive -gcflags=-shared -asmflags=-shared -installsuffix=_shared -a -o "$DIR/../wrapper/libprotorpc.a" github.com/asyou-me/protorpc-php
+go build -buildmode=c-archive -gcflags=-shared -asmflags=-shared -installsuffix=_shared -a -o "$DIR/../wrapper/libprotorpc.a" "$DIR/../lib.go"
 
 cd "$DIR/../wrapper/"
 make -f "$DIR/../wrapper/Makefile"

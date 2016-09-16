@@ -1,6 +1,6 @@
 /* Created by "go tool cgo" - DO NOT EDIT. */
 
-/* package github.com/asyou-me/protorpc-php */
+/* package command-line-arguments */
 
 /* Start of preamble from import "C" comments.  */
 
