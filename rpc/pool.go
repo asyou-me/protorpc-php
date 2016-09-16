@@ -42,7 +42,6 @@ func NewPool(
 
 	// 使用完成之后将连接送回连接池
 	pool.put(element)
-
 	return pool, nil
 }
 
@@ -78,12 +77,13 @@ func (pool *Pool) Call(serviceMethod string, args interface{}, reply interface{}
 
 // 从连接池获取一个连接
 func (pool *Pool) get() (*Element, error) {
+	pool.mutex.Lock()
 	connected := pool.Connected
 	if connected == 0 {
 		if connected >= pool.Max*2 {
+			pool.mutex.Unlock()
 			return nil, errors.New("连接数到达上限")
 		}
-		pool.mutex.Lock()
 		cli, err := pool.Dial()
 		if err != nil {
 			pool.mutex.Unlock()
@@ -95,7 +95,6 @@ func (pool *Pool) get() (*Element, error) {
 			Value: cli,
 		}, nil
 	}
-	pool.mutex.Lock()
 	item := pool.list.Front()
 	pool.mutex.Unlock()
 	return item, nil
@@ -103,14 +102,13 @@ func (pool *Pool) get() (*Element, error) {
 
 // 将一个连接放到连接池
 func (pool *Pool) put(c *Element) {
+	pool.mutex.Lock()
 	connected := pool.Connected
 	if connected >= pool.Max {
-		pool.mutex.Lock()
 		pool.Connected = pool.Connected - 1
 		pool.mutex.Unlock()
 		c.Value.Close()
 	} else {
-		pool.mutex.Lock()
 		pool.list.PushBack(c)
 		pool.mutex.Unlock()
 	}
