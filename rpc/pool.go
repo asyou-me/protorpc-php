@@ -2,6 +2,7 @@ package rpc
 
 import (
 	"errors"
+	"fmt"
 	"sync"
 	"time"
 )
@@ -63,6 +64,7 @@ func (pool *Pool) Call(serviceMethod string, args interface{}, reply interface{}
 	// 使用完成之后将连接送回连接池
 	defer func() {
 		if err := recover(); err != nil {
+			fmt.Println("{time:\"" + fmt.Sprint(time.Now().Unix()) + "\",msg:\"protorpc panic 错误\"}")
 			pool.test(element)
 		}
 	}()
@@ -79,7 +81,7 @@ func (pool *Pool) Call(serviceMethod string, args interface{}, reply interface{}
 func (pool *Pool) get() (*Element, error) {
 	pool.mutex.Lock()
 	connected := pool.Connected
-	if connected == 0 {
+	if connected < 1 {
 		if connected >= pool.Max*2 {
 			pool.mutex.Unlock()
 			return nil, errors.New("连接数到达上限")
