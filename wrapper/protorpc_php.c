@@ -26,7 +26,7 @@
 #include "php_ini.h"
 #include "ext/standard/info.h"
 #include "php_protorpc_php.h"
-#include "protorpc.h"
+#include "libprotorpc.h"
 
 /* If you declare any globals in php_protorpc_php.h uncomment this:
 ZEND_DECLARE_MODULE_GLOBALS(protorpc_php)
@@ -86,11 +86,11 @@ PHP_FUNCTION(protorpc)
 
 	// 处理请求
 	GoString addr = {addr_char,strlen(addr_char)};
-	GoString reply = Protorpc(addr,max,time_out);
+	char *reply = Protorpc(addr,max,time_out);
 	
 	// 返回结果
 	zend_string *strg;
-	strg = zend_string_init(reply.p,strlen(reply.p),0);
+	strg = zend_string_init(reply,strlen(reply),0);
 	RETURN_STR(strg);
 }
 
@@ -105,11 +105,11 @@ PHP_FUNCTION(protorpc_call)
 
 	// 处理请求
 	GoString addr = {addr_char,strlen(addr_char)},method = {method_char,strlen(method_char)},data = {data_char,strlen(data_char)};
-	GoString reply = ProtorpcCall(addr,method,data);
+	char *reply = ProtorpcCall(addr,method,data);
 
 	// 返回结果
 	zend_string *strg;
-	strg = zend_string_init(reply.p,strlen(reply.p),0);
+	strg = zend_string_init(reply,strlen(reply),0);
 
 	RETURN_STR(strg);
 }
