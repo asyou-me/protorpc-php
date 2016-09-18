@@ -27,6 +27,7 @@ missing
 mkinstalldirs
 modules
 run-tests.php
+libprotorpc.a
 tests/*/*.diff
 tests/*/*.out
 tests/*/*.php
